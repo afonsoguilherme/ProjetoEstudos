@@ -1,6 +1,7 @@
 <template>
   <div >
-    <titulo :texto="`Funcionário: ${funcionario.nomeFuncionario}`" />
+    <titulo :texto="`Funcionário: ${funcionario.nomeFuncionario}`" :btnVoltar="visualizando"/>
+    <button v-show="visualizando" class="btn btnEditar" @click="editar()">Editar</button>
     <table>
       <tbody>
         <tr>
@@ -50,6 +51,8 @@ export default {
     return {
       funcionario: {},
       id: this.$route.params.id,
+      visualizando: true,
+      loading: true
     };
   },
   created(){
@@ -61,8 +64,29 @@ export default {
         });
   },
   methods: {
-    
-}
+    editar() {
+      this.visualizando = !this.visualizando;
+    },
+    salvar(_funcionario) {
+      let _funcionarioEditar = {
+        idFuncionario: _funcionario.idFuncionario,
+        nomeFuncionario: _funcionario.nomeFuncionario,
+        idadeFuncionario: _funcionario.idadeFuncionario,
+        funcaoFuncionario: _funcionario.funcaoFuncionario
+      };
+      this.$http
+        .put(
+          `http://localhost:5000/api/Funcionario/AtualizarFuncionario/${_funcionarioEditar.idFuncionario}`,
+          _funcionarioEditar
+        )
+        .then(res => res.json())
+        .then(funcionario => (this.funcionario = funcionario))
+        .then(() => (this.visualizando = true));
+    },
+    cancelar() {
+      this.visualizando = !this.visualizando;
+    }
+  }
 };
 
 </script>
