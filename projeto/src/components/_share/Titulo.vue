@@ -1,4 +1,3 @@
-    
 <template>
   <div>
     <div style="display: flex; width: 50%">
